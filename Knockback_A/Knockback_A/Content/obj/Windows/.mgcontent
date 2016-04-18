@@ -4,6 +4,6 @@
   <Platform>Windows</Platform>
   <Config />
   <SourceFiles>
-    <File>c:/users/andreas/documents/visual studio 2015/Projects/Knockback_A/Knockback_A/Content/Chopper.fbx</File>
+    <File>C:/Users/Andreas/Documents/Visual Studio 2015/Projects/Knockback_A/trunk/Knockback_A/Knockback_A/Content/Chopper.fbx</File>
   </SourceFiles>
 </SourceFileCollection>

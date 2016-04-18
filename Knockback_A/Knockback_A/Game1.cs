@@ -10,13 +10,12 @@ namespace Knockback_A {
         SpriteBatch spriteBatch;
 
         List<CModel> models = new List<CModel>();
+        Camera camera;
 
         Vector3 modelPosition = Vector3.Zero;
         Vector3 cameraPosition = new Vector3(0.0f, 0.0f, 50.0f);
 
-        Model chopper;
         float aspectRatio;
-        Matrix[] modelTransforms;
 
         public Game1() {
             graphics = new GraphicsDeviceManager(this);
@@ -49,6 +48,9 @@ namespace Knockback_A {
                     models.Add(new CModel(Content.Load<Model>("Chopper"), position,
                         new Vector3(0, MathHelper.ToRadians(90) * (y * 3 + x), 0),
                         new Vector3(0.25f), GraphicsDevice));
+
+                    camera = new TargetCamera(cameraPosition, 
+                        Vector3.Zero, GraphicsDevice);
                 }
         }
 
@@ -62,7 +64,7 @@ namespace Knockback_A {
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
-            
+            camera.Update();
 
             base.Update(gameTime);
         }
@@ -71,16 +73,21 @@ namespace Knockback_A {
         protected override void Draw(GameTime gameTime) {
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
-            Matrix view = Matrix.CreateLookAt(cameraPosition, Vector3.Zero, Vector3.Up);
+            /*Matrix view = Matrix.CreateLookAt(cameraPosition, Vector3.Zero, Vector3.Up);
 
             Matrix projection = Matrix.CreatePerspectiveFieldOfView(
-                MathHelper.ToRadians(45.0f), aspectRatio, 1.0f, 10000.0f);
-            
+                MathHelper.ToRadians(45.0f), aspectRatio, 1.0f, 10000.0f);**/
 
+            int nModelsDrawn = 0;
 
             foreach (CModel model in models)
-                model.Draw(view, projection);
-            
+                if (camera.BoundingVolumeIsInView(model.BoundingSphere))
+                {
+                    nModelsDrawn++;
+                    model.Draw(camera.View, camera.Projection);
+                }
+            if (nModelsDrawn == 0)
+                GraphicsDevice.Clear(Color.Red);
 
             base.Draw(gameTime);
         }
